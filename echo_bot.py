@@ -2,7 +2,10 @@ import os
 import telebot
 
 from dotenv import load_dotenv
+from main import get_random_question_and_answer
 
+
+question, answer = get_random_question_and_answer()
 
 load_dotenv()
 
@@ -26,7 +29,7 @@ def send_welcome(message):
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
     if message.text == 'Новый вопрос':
-        bot.reply_to(message, 'You pressed button 1')
+        bot.reply_to(message, question)
     elif message.text == 'Сдаться':
         bot.reply_to(message, 'You pressed button 2')
     elif message.text == 'Мой счёт':
