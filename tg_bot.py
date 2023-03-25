@@ -45,7 +45,7 @@ async def handle_solution_attempt(update: Update, context) -> int:
         await update.message.reply_text(f'Правильный ответ: {answer}. Для следующего вопроса нажми «Новый вопрос»')
         return NEW_QUESTION
     else:
-        await update.message.reply_text(f'Неправильно... Попробуешь ещё раз?')
+        await update.message.reply_text('Неправильно... Попробуешь ещё раз?')
         return SOLUTION_ATTEMPT
 
 
