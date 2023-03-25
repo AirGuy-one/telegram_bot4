@@ -29,6 +29,7 @@ VK_BOT_TOKEN=thisisyourvktoken
 
 To start the telegram bot, simply run the bot.py file:
 ```python tg_bot.py```
+
 To start the vk bot, simply run the bot.py file:
 ```python vk_bot.py```
 
