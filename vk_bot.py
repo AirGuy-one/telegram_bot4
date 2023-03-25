@@ -1,12 +1,17 @@
 import os
 import random
-
 import vk_api as vk
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from dotenv import load_dotenv
+from get_question_and_answer import get_random_question_and_answer
+from db_connection import set_up_db_connection, set_question, get_question
 
+
+r = set_up_db_connection()
 load_dotenv()
+answer = ''
+NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
 
 
 def start(event, vk_api):
@@ -25,7 +30,12 @@ def start(event, vk_api):
     )
 
 
-def echo(event, vk_api):
+def quiz(event, vk_api):
+    global answer
+
+    question, answer = get_random_question_and_answer()
+    set_question(r, event.user_id, question)
+
     keyboard = VkKeyboard(one_time=True)
 
     keyboard.add_button('Новый вопрос', color=VkKeyboardColor.POSITIVE)
@@ -33,12 +43,34 @@ def echo(event, vk_api):
     keyboard.add_line()
     keyboard.add_button('Мой счёт', color=VkKeyboardColor.SECONDARY)
 
-    vk_api.messages.send(
-        user_id=event.user_id,
-        message=event.text,
-        random_id=random.randint(1, 1000),
-        keyboard=keyboard.get_keyboard()
-    )
+    if event.text == 'Новый вопрос':
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message=get_question(r, event.user_id),
+            random_id=random.randint(1, 1000),
+            keyboard=keyboard.get_keyboard()
+        )
+    elif event.text == answer:
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message='Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»',
+            random_id=random.randint(1, 1000),
+            keyboard=keyboard.get_keyboard()
+        )
+    elif event.text == 'Сдаться':
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message=f'Правильный ответ: {answer}. Для следующего вопроса нажми «Новый вопрос»',
+            random_id=random.randint(1, 1000),
+            keyboard=keyboard.get_keyboard()
+        )
+    else:
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message='Неправильно... Попробуешь ещё раз?',
+            random_id=random.randint(1, 1000),
+            keyboard=keyboard.get_keyboard()
+        )
 
 
 if __name__ == "__main__":
@@ -51,4 +83,4 @@ if __name__ == "__main__":
             if event.text == '/start':
                 start(event, vk_api)
             else:
-                echo(event, vk_api)
+                quiz(event, vk_api)
