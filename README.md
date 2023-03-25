@@ -6,8 +6,6 @@
 * "New question" button to get a new question
 * "Give up" button to skip a question
 * "My score" button to display your score
-* Random questions from a predefined set
-* Keeps track of your score
 ### Installation
 To use this bot, you will need to install the following dependencies:
 
