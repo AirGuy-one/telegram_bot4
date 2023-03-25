@@ -15,4 +15,4 @@ def set_question(r, chat_id, question):
 
 
 def get_question(r, chat_id):
-    return r.get(str(chat_id))
+    return r.get(str(chat_id)).decode('utf-8')

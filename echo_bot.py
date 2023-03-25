@@ -1,54 +1,65 @@
 import os
-import telebot
 
 from dotenv import load_dotenv
-from main import get_random_question_and_answer
+from telegram import ReplyKeyboardMarkup, Update
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from get_question_and_answer import get_random_question_and_answer
 from db_connection import set_up_db_connection, set_question, get_question
 
 r = set_up_db_connection()
 
 load_dotenv()
 
-
-BOT_TOKEN = os.environ.get('TG_BOT_TOKEN')
-
-bot = telebot.TeleBot(BOT_TOKEN)
-
-custom_keyboard = telebot.types.ReplyKeyboardMarkup(row_width=2)
-btn1 = telebot.types.KeyboardButton('Новый вопрос')
-btn2 = telebot.types.KeyboardButton('Сдаться')
-btn3 = telebot.types.KeyboardButton('Мой счёт')
-custom_keyboard.add(btn1, btn2, btn3)
+answer = ''
+counter = 0
 
 
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    bot.reply_to(message, "Welcome to the club, buddy!", reply_markup=custom_keyboard)
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    reply_keyboard = [['Новый вопрос', 'Сдаться'], ['Мой счёт']]
+    await update.message.reply_html(
+        rf"Привет, я бот для викторин!",
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True),
+    )
 
 
-answer = None
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("Help!")
 
 
-@bot.message_handler(func=lambda message: True)
-def echo_message(message):
-    global answer
+async def quiz(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    global answer, counter
 
-    if message.text == 'Новый вопрос':
+    if update.message.text == 'Новый вопрос':
         question, answer = get_random_question_and_answer()
-        set_question(r, message.chat.id, question)
-        bot.reply_to(
-            message,
-            get_question(r, message.chat.id)
-        )
-    elif message.text == 'Сдаться':
-        bot.reply_to(message, 'You pressed button 2')
-    elif message.text == 'Мой счёт':
-        bot.reply_to(message, 'You pressed button 3')
-    elif message.text == answer:
-        bot.reply_to(message, 'Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»')
+        set_question(r, update.message.chat_id, question)
+        counter += 1
+        await update.message.reply_text(get_question(r, update.message.chat_id))
+    elif update.message.text == 'Сдаться':
+        await update.message.reply_text("Do not give up")
+    elif update.message.text == 'Мой счёт':
+        await update.message.reply_text("This is your bill")
+    elif update.message.text == answer:
+        counter -= 1
+        await update.message.reply_text('Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»')
     else:
-        bot.send_message(message.chat.id, 'Неправильно… Попробуешь ещё раз?')
+        if counter == 0:
+            reply_keyboard = [['Новый вопрос', 'Сдаться'], ['Мой счёт']]
+            counter = 0
+            await update.message.reply_text(
+                'Привет, я бот для викторин!',
+                reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+            )
+        else:
+            await update.message.reply_text('Неправильно... Попробуешь ещё раз?')
 
 
-if __name__ == '__main__':
-    bot.infinity_polling()
+def main() -> None:
+    application = Application.builder().token(os.environ.get('TG_BOT_TOKEN')).build()
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, quiz))
+    application.run_polling()
+
+
+if __name__ == "__main__":
+    main()
