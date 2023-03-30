@@ -17,9 +17,6 @@ def implement_redis_connection():
     )
 
 
-NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
-
-
 def start(event, vk_api):
     keyboard = VkKeyboard(one_time=True)
 
