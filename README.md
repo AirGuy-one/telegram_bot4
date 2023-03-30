@@ -17,11 +17,16 @@ pip install requirements.txt
 You will also need to create a .env file in the root directory of your project and insert your Telegram and Vkontakte bot tokens:
 
 ```
-TG_BOT_TOKEN=thisisyourtgtoken
-VK_BOT_TOKEN=thisisyourvktoken
+TG_BOT_TOKEN=this_is_tg_token
+VK_BOT_TOKEN=this_is_vk_token
+HOST=this_is_host
+PORT=12345
+USERNAME='username'
+PASSWORD='the_password'
+PATH_TO_QUESTIONS='questions_data/1vs1200.txt'
 ```
 
-Afterward, you need to create the 'questions_data' folder and insert the '1vs1200.txt' file here, which will store the data about questions and answers according to the example file:
+Afterward, you need to create the txt file, which will store the data about questions and answers according to the example file:
 
 ```
 Вопрос 1:

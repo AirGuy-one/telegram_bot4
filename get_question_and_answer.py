@@ -1,8 +1,12 @@
+import os
 from random import randint
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def get_random_question_and_answer():
-    with open("questions_data/1vs1200.txt", "r", encoding='KOI8-R') as my_file:
+    with open(os.environ.get('PATH_TO_QUESTIONS'), "r", encoding='KOI8-R') as my_file:
         file_contents = my_file.read()
 
     amount = ''
