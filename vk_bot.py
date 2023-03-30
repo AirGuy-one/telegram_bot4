@@ -5,7 +5,7 @@ import redis
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from dotenv import load_dotenv
-from get_question_and_answer import get_random_question_and_answer
+from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
 
 r = redis.Redis(
@@ -38,7 +38,8 @@ def start(event, vk_api):
 def quiz(event, vk_api):
     global answer
 
-    question, answer = get_random_question_and_answer()
+    questions, answers = parse_question_and_answers()
+    question, answer = get_random_question_and_answer(questions, answers)
     r.set(str(event.user_id), question)
 
     keyboard = VkKeyboard(one_time=True)

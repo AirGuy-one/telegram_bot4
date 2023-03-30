@@ -4,7 +4,7 @@ import redis
 from dotenv import load_dotenv
 from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, ConversationHandler, MessageHandler, filters
-from get_question_and_answer import get_random_question_and_answer
+from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
 
 r = redis.Redis(
@@ -36,7 +36,8 @@ async def help_command(update: Update, context) -> None:
 
 async def handle_new_question_request(update: Update, context) -> int:
     global answer
-    question, answer = get_random_question_and_answer()
+    questions, answers = parse_question_and_answers()
+    question, answer = get_random_question_and_answer(questions, answers)
     r.set(str(update.message.chat_id), question)
     await update.message.reply_text(r.get(str(update.message.chat_id)).decode('utf-8'))
     return SOLUTION_ATTEMPT

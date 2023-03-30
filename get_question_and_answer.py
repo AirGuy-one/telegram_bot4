@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_random_question_and_answer():
+def parse_question_and_answers():
     with open(os.environ.get('PATH_TO_QUESTIONS'), "r", encoding='KOI8-R') as f:
         file_contents = f.read()
 
@@ -15,9 +15,9 @@ def get_random_question_and_answer():
     answers = []
     q, a = 0, 0
 
-    for i in file_contents:
-        if i != '\n':
-            amount += i
+    for symbol in file_contents:
+        if symbol != '\n':
+            amount += symbol
         else:
             all_phrases.append(amount)
             amount = ''
@@ -47,5 +47,9 @@ def get_random_question_and_answer():
         if phrase == 'Ответ:':
             a += 1
 
+    return questions, answers
+
+
+def get_random_question_and_answer(questions, answers):
     qstn_num = randint(0, len(questions) - 1)
     return questions[qstn_num], answers[qstn_num]
