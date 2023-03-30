@@ -6,15 +6,12 @@ from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, ConversationHandler, MessageHandler, filters
 from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
-
 r = redis.Redis(
     host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
     port=18165,
     username='default',
     password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
 )
-
-load_dotenv()
 
 answer = ''
 
@@ -76,4 +73,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    load_dotenv()
+
     main()

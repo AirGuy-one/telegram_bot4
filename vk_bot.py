@@ -14,7 +14,6 @@ r = redis.Redis(
     username=os.environ.get('USERNAME'),
     password=os.environ.get('PASSWORD')
 )
-load_dotenv()
 answer = ''
 NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
 
@@ -80,6 +79,8 @@ def quiz(event, vk_api):
 
 
 if __name__ == "__main__":
+    load_dotenv()
+
     vk_session = vk.VkApi(token=os.environ.get('VK_BOT_TOKEN'))
     vk_api = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
