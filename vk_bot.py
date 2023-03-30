@@ -8,12 +8,15 @@ from dotenv import load_dotenv
 from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
 
-r = redis.Redis(
-    host=os.environ.get('HOST'),
-    port=int(os.environ.get('PORT')),
-    username=os.environ.get('USERNAME'),
-    password=os.environ.get('PASSWORD')
-)
+def implement_redis_connection():
+    return redis.Redis(
+        host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
+        port=18165,
+        username='default',
+        password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
+    )
+
+
 NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
 
 
@@ -34,6 +37,7 @@ def start(event, vk_api):
 
 
 def quiz(event, vk_api):
+    r = implement_redis_connection()
     questions, answers = parse_question_and_answers()
     question, answer = get_random_question_and_answer(questions, answers)
     r.set(str(event.user_id), question)

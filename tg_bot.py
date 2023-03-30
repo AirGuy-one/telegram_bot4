@@ -6,7 +6,6 @@ from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, ConversationHandler, MessageHandler, filters
 from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
-
 NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
 
 
