@@ -7,15 +7,11 @@
 * "Give up" button to skip a question
 * "My score" button to display your score
 ### Installation
-To use this bot, you will need to install the following dependencies:
 
-* pyTelegramBotAPI==4.10.0
-* redis[hiredis]==4.5.3
-
-You can install them using pip:
+You can install the necessary dependencies using pip:
 
 ```
-pip install pyTelegramBotAPI==4.10.0 redis[hiredis]==4.5.3
+pip install requirements.txt
 ```
 
 You will also need to create a .env file in the root directory of your project and insert your Telegram and Vkontakte bot tokens:
