@@ -25,10 +25,6 @@ async def start(update: Update, context) -> int:
     return NEW_QUESTION
 
 
-async def help_command(update: Update, context) -> None:
-    await update.message.reply_text("Help!")
-
-
 async def handle_new_question_request(update: Update, context) -> int:
     questions, answers = parse_question_and_answers()
     question, answer = get_random_question_and_answer(questions, answers)
