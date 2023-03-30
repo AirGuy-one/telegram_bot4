@@ -6,8 +6,8 @@ load_dotenv()
 
 
 def get_random_question_and_answer():
-    with open(os.environ.get('PATH_TO_QUESTIONS'), "r", encoding='KOI8-R') as my_file:
-        file_contents = my_file.read()
+    with open(os.environ.get('PATH_TO_QUESTIONS'), "r", encoding='KOI8-R') as f:
+        file_contents = f.read()
 
     amount = ''
     all_phrases = []
