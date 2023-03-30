@@ -6,14 +6,17 @@ from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, ConversationHandler, MessageHandler, filters
 from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
-r = redis.Redis(
-    host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
-    port=18165,
-    username='default',
-    password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
-)
 
 NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
+
+
+def implement_redis_connection():
+    return redis.Redis(
+        host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
+        port=18165,
+        username='default',
+        password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
+    )
 
 
 async def start(update: Update, context) -> int:
@@ -26,6 +29,7 @@ async def start(update: Update, context) -> int:
 
 
 async def handle_new_question_request(update: Update, context) -> int:
+    r = implement_redis_connection()
     questions, answers = parse_question_and_answers()
     question, answer = get_random_question_and_answer(questions, answers)
     # Here we put to database {chat_id}-question pair and {chat_id}chat_id-answer
@@ -36,6 +40,7 @@ async def handle_new_question_request(update: Update, context) -> int:
 
 
 async def handle_solution_attempt(update: Update, context) -> int:
+    r = implement_redis_connection()
     answer = r.get(str(update.message.chat_id) + 'answer')
     if update.message.text == answer:
         await update.message.reply_text('Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»')
@@ -63,7 +68,6 @@ def main() -> None:
     )
 
     application.add_handler(conversation_handler)
-    application.add_handler(CommandHandler("help", help_command))
     application.run_polling()
 
 
