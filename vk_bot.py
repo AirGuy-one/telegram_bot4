@@ -9,10 +9,10 @@ from get_question_and_answer import get_random_question_and_answer
 
 
 r = redis.Redis(
-    host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
-    port=18165,
-    username='default',
-    password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
+    host=os.environ.get('HOST'),
+    port=int(os.environ.get('PORT')),
+    username=os.environ.get('USERNAME'),
+    password=os.environ.get('PASSWORD')
 )
 load_dotenv()
 answer = ''
