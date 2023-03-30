@@ -14,7 +14,6 @@ r = redis.Redis(
     username=os.environ.get('USERNAME'),
     password=os.environ.get('PASSWORD')
 )
-answer = ''
 NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
 
 
@@ -35,11 +34,10 @@ def start(event, vk_api):
 
 
 def quiz(event, vk_api):
-    global answer
-
     questions, answers = parse_question_and_answers()
     question, answer = get_random_question_and_answer(questions, answers)
     r.set(str(event.user_id), question)
+    r.set(str(event.user_id) + 'answer', answer)
 
     keyboard = VkKeyboard(one_time=True)
 
@@ -48,6 +46,7 @@ def quiz(event, vk_api):
     keyboard.add_line()
     keyboard.add_button('Мой счёт', color=VkKeyboardColor.SECONDARY)
 
+    answer = r.get(str(event.user_id) + 'answer')
     if event.text == 'Новый вопрос':
         vk_api.messages.send(
             user_id=event.user_id,

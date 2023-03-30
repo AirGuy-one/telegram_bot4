@@ -13,8 +13,6 @@ r = redis.Redis(
     password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
 )
 
-answer = ''
-
 NEW_QUESTION, SOLUTION_ATTEMPT, GIVE_UP = range(3)
 
 
@@ -32,16 +30,17 @@ async def help_command(update: Update, context) -> None:
 
 
 async def handle_new_question_request(update: Update, context) -> int:
-    global answer
     questions, answers = parse_question_and_answers()
     question, answer = get_random_question_and_answer(questions, answers)
+    # Here we put to database {chat_id}-question pair and {chat_id}chat_id-answer
     r.set(str(update.message.chat_id), question)
+    r.set(str(update.message.chat_id) + 'answer', answer)
     await update.message.reply_text(r.get(str(update.message.chat_id)).decode('utf-8'))
     return SOLUTION_ATTEMPT
 
 
 async def handle_solution_attempt(update: Update, context) -> int:
-    global answer
+    answer = r.get(str(update.message.chat_id) + 'answer')
     if update.message.text == answer:
         await update.message.reply_text('Правильно! Поздравляю! Для следующего вопроса нажми «Новый вопрос»')
         return NEW_QUESTION
