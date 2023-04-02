@@ -72,10 +72,10 @@ if __name__ == "__main__":
     load_dotenv()
 
     r = redis.Redis(
-        host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
-        port=18165,
-        username='default',
-        password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
+        host=os.environ.get('HOST'),
+        port=int(os.environ.get('PORT')),
+        username=os.environ.get('USERNAME'),
+        password=os.environ.get('PASSWORD')
     )
 
     vk_session = vk.VkApi(token=os.environ.get('VK_BOT_TOKEN'))
