@@ -39,7 +39,16 @@ async def handle_solution_attempt(update: Update, context) -> int:
         return 1
 
 
-def main() -> None:
+if __name__ == "__main__":
+    load_dotenv()
+
+    r = redis.Redis(
+        host=os.environ.get('HOST'),
+        port=int(os.environ.get('PORT')),
+        username=os.environ.get('USERNAME'),
+        password=os.environ.get('PASSWORD')
+    )
+
     application = Application.builder().token(os.environ.get('TG_BOT_TOKEN')).build()
 
     conversation_handler = ConversationHandler(
@@ -55,16 +64,3 @@ def main() -> None:
 
     application.add_handler(conversation_handler)
     application.run_polling()
-
-
-if __name__ == "__main__":
-    load_dotenv()
-
-    r = redis.Redis(
-        host=os.environ.get('HOST'),
-        port=int(os.environ.get('PORT')),
-        username=os.environ.get('USERNAME'),
-        password=os.environ.get('PASSWORD')
-    )
-
-    main()
