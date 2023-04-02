@@ -8,15 +8,6 @@ from dotenv import load_dotenv
 from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
 
-def implement_redis_connection():
-    return redis.Redis(
-        host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
-        port=18165,
-        username='default',
-        password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
-    )
-
-
 def start(event, vk_api):
     keyboard = VkKeyboard(one_time=True)
 
@@ -34,7 +25,6 @@ def start(event, vk_api):
 
 
 def quiz(event, vk_api):
-    r = implement_redis_connection()
     questions, answers = parse_question_and_answers()
     question, answer = get_random_question_and_answer(questions, answers)
     r.set(str(event.user_id), question)
@@ -80,6 +70,13 @@ def quiz(event, vk_api):
 
 if __name__ == "__main__":
     load_dotenv()
+
+    r = redis.Redis(
+        host='redis-18165.c93.us-east-1-3.ec2.cloud.redislabs.com',
+        port=18165,
+        username='default',
+        password='WzTn5YXxs9GBKmTagIumPT6G3WwiiRGS'
+    )
 
     vk_session = vk.VkApi(token=os.environ.get('VK_BOT_TOKEN'))
     vk_api = vk_session.get_api()
