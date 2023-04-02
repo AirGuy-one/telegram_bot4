@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def parse_question_and_answers():
-    with open(os.environ.get('PATH_TO_QUESTIONS'), "r", encoding='KOI8-R') as f:
+def parse_question_and_answers(path_to_questions):
+    with open(path_to_questions, "r", encoding='KOI8-R') as f:
         file_contents = f.read()
 
     amount = ''

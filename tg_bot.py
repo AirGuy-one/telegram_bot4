@@ -16,8 +16,7 @@ async def start(update: Update, context) -> int:
 
 
 async def handle_new_question_request(update: Update, context) -> int:
-    print(r)
-    questions, answers = parse_question_and_answers()
+    questions, answers = parse_question_and_answers(path_to_questions)
     question, answer = get_random_question_and_answer(questions, answers)
     # Here we put to database {chat_id}-question pair and {chat_id}chat_id-answer
     r.set(str(update.message.chat_id), question)
@@ -41,6 +40,8 @@ async def handle_solution_attempt(update: Update, context) -> int:
 
 if __name__ == "__main__":
     load_dotenv()
+
+    path_to_questions = os.environ.get('PATH_TO_QUESTIONS')
 
     r = redis.Redis(
         host=os.environ.get('HOST'),

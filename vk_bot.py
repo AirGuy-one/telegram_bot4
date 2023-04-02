@@ -25,7 +25,7 @@ def start(event, vk_api):
 
 
 def quiz(event, vk_api):
-    questions, answers = parse_question_and_answers()
+    questions, answers = parse_question_and_answers(path_to_questions)
     question, answer = get_random_question_and_answer(questions, answers)
     r.set(str(event.user_id), question)
     r.set(str(event.user_id) + 'answer', answer)
@@ -70,6 +70,8 @@ def quiz(event, vk_api):
 
 if __name__ == "__main__":
     load_dotenv()
+
+    path_to_questions = os.environ.get('PATH_TO_QUESTIONS')
 
     r = redis.Redis(
         host=os.environ.get('HOST'),
