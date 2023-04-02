@@ -19,7 +19,7 @@ async def handle_new_question_request(update: Update, context) -> int:
     question, answer = get_random_question_and_answer(questions, answers)
     # Here we put to database {chat_id}-question pair and {chat_id}chat_id-answer
     r.set(str(update.message.chat_id), question)
-    r.set(str(update.message.chat_id) + 'answer', answer)
+    r.set(f'{update.message.chat_id} answer', answer)
     await update.message.reply_text(r.get(str(update.message.chat_id)).decode('utf-8'))
     return 1
 
