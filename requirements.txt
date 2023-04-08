@@ -1,5 +1,4 @@
 redis[hiredis]==4.5.3
 python-dotenv==1.0.0
-telegram==0.0.1
 vk-api==11.9.9
 python-telegram-bot==20.2
