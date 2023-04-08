@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from get_question_and_answer import get_random_question_and_answer, parse_question_and_answers
 
 
-def start(event, vk_api):
+def start(event, vk_api, r):
     keyboard = VkKeyboard(one_time=True)
 
     keyboard.add_button('Новый вопрос', color=VkKeyboardColor.POSITIVE)
@@ -24,7 +24,7 @@ def start(event, vk_api):
     )
 
 
-def quiz(event, vk_api):
+def quiz(event, vk_api, r):
     question, answer = get_random_question_and_answer(questions, answers)
     r.set(str(event.user_id), question)
     r.set(str(event.user_id) + 'answer', answer)
@@ -86,6 +86,6 @@ if __name__ == "__main__":
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
             if event.text == '/start':
-                start(event, vk_api)
+                start(event, vk_api, r)
             else:
-                quiz(event, vk_api)
+                quiz(event, vk_api, r)
